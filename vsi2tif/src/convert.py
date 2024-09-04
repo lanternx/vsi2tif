@@ -23,17 +23,19 @@ def cellsens2raw(
         f"-compression {compression} {input_path} {output_path}"
     )
     if verbose == 0:
-        sp.check_call(cmd, shell=True, env={"BF_MAX_MEM": f"{max_mem}g"}, stdout=sp.DEVNULL, stderr=sp.STDOUT)
+        sp.check_call(cmd, shell=True, env=dict(os.environ), stdout=sp.DEVNULL, stderr=sp.STDOUT)
     else:
-        sp.check_call(cmd, shell=True, env={"BF_MAX_MEM": f"{max_mem}g"})
+        sp.check_call(cmd, shell=True, env=dict(os.environ))#previous code will lead to no java
 
 
 def raw2tif(input_path: str, output_path: str, compression: str = "jpeg", quality: int = 85, verbose: int = 1) -> None:
     if not os.path.exists(input_path):
         raise FileNotFoundError(f"Input file not found at: {input_path}")
-
-    os.makedirs("/".join(output_path.split("/")[:-1]), exist_ok=True)
-
+    if "/" in output:
+        os.makedirs("/".join(output_path.split("/")[:-1]), exist_ok=True)
+    elif "\\" in output:
+        os.makedirs("/".join(output_path.split("\\")[:-1]), exist_ok=True)
+    
     cmd = (
         f"vips tiffsave {input_path} {output_path} --bigtiff --tile --pyramid --compression={compression} --Q={quality}"
     )
