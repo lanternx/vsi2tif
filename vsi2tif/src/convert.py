@@ -23,9 +23,9 @@ def cellsens2raw(
         f"-compression {compression} {input_path} {output_path}"
     )
     if verbose == 0:
-        sp.check_call(cmd, shell=True, env={"BF_MAX_MEM": f"{max_mem}g"}, stdout=sp.DEVNULL, stderr=sp.STDOUT)
+        sp.check_call(cmd, shell=True, env=dict(os.environ), stdout=sp.DEVNULL, stderr=sp.STDOUT)
     else:
-        sp.check_call(cmd, shell=True, env={"BF_MAX_MEM": f"{max_mem}g"})
+        sp.check_call(cmd, shell=True, env=dict(os.environ))#previous code will lead to no java
 
 
 def raw2tif(input_path: str, output_path: str, compression: str = "jpeg", quality: int = 85, verbose: int = 1) -> None:
